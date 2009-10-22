@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <title>JapHard Chat</title>
+
+        <script type="text/javascript" src="./libs/jquery-1.3.2.min.js"></script>
+
+        <script type="text/javascript">
+
+            $(function()
+            {
+                $(window).load(function ()
+                {
+                    $('#new-message-send').click(function (event)
+                    {
+                        event.preventDefault();
+
+                        var message = $('#new-message-text').val();
+                        $('#new-message-text').val('');
+                        
+                        $.get('./hello', '', chat_update);
+                    });
+                });
+            });
+
+            function chat_update(data)
+            {
+                $('#chat').append(data);
+            }
+
+        </script>
+    </head>
+
+    <body>
+        <h1>JapHard Chat</h1>
+
+        <div id="chat">
+            <div class="message">
+                <span class="author">Chat</span>
+                <span class="message">Welcome!</span>
+            </div>
+        </div>
+
+        <hr />
+
+        <div id="new-message">
+            <form>
+                <textarea id="new-message-text"></textarea>
+                <input type="submit" id="new-message-send" value="Send" />
+            </form>
+        </div>
+    </body>
+</html>
