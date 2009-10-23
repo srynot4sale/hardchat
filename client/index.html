@@ -6,22 +6,30 @@
 
         <script type="text/javascript">
 
+            // Call this function on page load
             $(function()
             {
                 $(window).load(function ()
                 {
+                    // When new-message-send button clicked
                     $('#new-message-send').click(function (event)
                     {
+                        // Don't post form
                         event.preventDefault();
 
+                        // Grab message text box contents
                         var message = $('#new-message-text').val();
+
+                        // Reset text box
                         $('#new-message-text').val('');
-                        
+
+                        // Post message to server
                         $.get('./msg?'+message, '', chat_update);
                     });
                 });
             });
 
+            // Handle reponses from server
             function chat_update(data)
             {
                 $('#chat').append(data);
