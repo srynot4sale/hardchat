@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-import os
+import os, os.path
 import BaseHTTPServer
 
 
@@ -50,7 +50,9 @@ class EchoHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             action = self.path
 
             # Open requested file and send to client
-            f = open('/home/aaronb/code/personal/hardchat/client'+self.path)
+            dir = os.path.abspath('')
+
+            f = open(dir+'/client'+self.path)
             self.wfile.write(f.read())
             f.close()
 
