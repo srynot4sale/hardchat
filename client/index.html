@@ -17,7 +17,7 @@
                         var message = $('#new-message-text').val();
                         $('#new-message-text').val('');
                         
-                        $.get('./hello', '', chat_update);
+                        $.get('./msg?'+message, '', chat_update);
                     });
                 });
             });

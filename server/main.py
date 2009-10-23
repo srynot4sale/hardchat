@@ -18,24 +18,34 @@ class EchoHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-        if self.path == '/':
-            f = open('/home/aaronb/code/personal/hardchat/client/index.html')
-            self.wfile.write(f.read())
-            f.close()
+        action = ''
 
-        elif self.path == '/libs/jquery-1.3.2.min.js':
-            f = open('/home/aaronb/code/personal/hardchat/client/libs/jquery-1.3.2.min.js')
+        if not self.path.startswith('/msg?'):
+
+            if self.path == '/':
+                self.path = '/index.html'
+
+            action = self.path
+
+            f = open('/home/aaronb/code/personal/hardchat/client'+self.path)
             self.wfile.write(f.read())
             f.close()
 
         else:
-            self.wfile.write('Child %s echo>' % os.getpid())
+
+            message = self.path[5:]
+
+            html  = '<div class="message">'
+            html += '<span class="author">Unknown</span>'
+            html += '<span class="message">%s</span>' % message
+            html += '</div>'
+
+            self.wfile.write(html)
             self.wfile.flush()
 
-            message = self.path
-            self.wfile.write(message)
+            action = 'message - '+message
 
-        print "Child %s echo'd: %r" % (os.getpid(), self.path)
+        print "Action: %r" % action
 
 
 if __name__ == '__main__':
