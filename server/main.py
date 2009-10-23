@@ -81,7 +81,7 @@ class EchoHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 if __name__ == '__main__':
 
     # Create forking server
-    server = BaseHTTPServer.SocketServer.ForkingTCPServer(('localhost', 8000), EchoHandler)
+    server = BaseHTTPServer.HTTPServer(('localhost', 8000), EchoHandler)
     print "Server listening on localhost:8000..."
     try:
         server.serve_forever()
