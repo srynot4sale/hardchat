@@ -15,8 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-import os, os.path
+# Import python libs
 import BaseHTTPServer
+
+# Import hardchat libs
+import file, messaging
 
 
 class EchoHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -39,41 +42,25 @@ class EchoHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         # Action type for logging
         action = ''
 
-        # If not a posted message
-        if not self.path.startswith('/msg?'):
+        # Handle root file request
+        if self.path == '/':
+            self.path = '/static/index.html'
 
-            # Handle root file request
-            if self.path == '/':
-                self.path = '/index.html'
+        # File operations begin with /static/
+        if self.path.startswith('/static/'):
 
-            # Create log message
-            action = self.path
+            # Load and send file to the client
+            file.handleRequest(self.wfile, self.path[8:])
 
-            # Open requested file and send to client
-            dir = os.path.abspath('')
-
-            f = open(dir+'/client'+self.path)
-            self.wfile.write(f.read())
-            f.close()
-
-        # Must want some HTML
+        # Otherwise, must be a messaging request
         else:
 
-            # Remove prefix portion ( /msg? )
-            message = self.path[5:]
+            # Handle request and send response to the client
+            messaging.handleRequest(self.wfile, self.path)
 
-            # Generate HTML
-            html  = '<div class="message">'
-            html += '<span class="author">Unknown</span>'
-            html += '<span class="message">%s</span>' % message
-            html += '</div>'
 
-            # Send to client
-            self.wfile.write(html)
-            self.wfile.flush()
-
-            # Create log message
-            action = 'message - '+message
+        # Create log message
+        action = self.path
 
         # Print action to console for logging/debugging
         print "Action: %r" % action
