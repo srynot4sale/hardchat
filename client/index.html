@@ -42,7 +42,7 @@
                         $('#new-message-text').val('');
 
                         // Post message to server
-                        $.get('./msg?'+message, '', chat_update);
+                        $.get('/msg?'+message, '', chat_update);
                     });
                 });
             });

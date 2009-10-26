@@ -56,7 +56,8 @@ class EchoHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
 
             # Handle request and send response to the client
-            messaging.handleRequest(self.wfile, self.path)
+            handler = messaging.handler()
+            handler.handleRequest(self.wfile, self.path[1:])
 
 
         # Create log message

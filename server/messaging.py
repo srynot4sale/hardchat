@@ -13,17 +13,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-def handleRequest(connection, request):
+class handler:
 
-    # Remove prefix portion ( /msg? )
-    message = request[5:]
+    public = ['msg']
 
-    # Generate HTML
-    html  = '<div class="message">'
-    html += '<span class="author">Unknown</span>'
-    html += '<span class="message">%s</span>' % message
-    html += '</div>'
+    def handleRequest(self, connection, request):
+        '''
+        Handle messaging requests
+        '''
 
-    # Send to client
-    connection.write(html)
-    connection.flush()
+        # Find action type
+        action, data = request.split('?', 1)
+
+        # Check method is usable
+        if action not in self.public:
+            raise Exception, 'Attempting to access private method'
+
+        # Use appropriate method
+        response = getattr(self, action)(data)
+
+        # Send response back to client
+        connection.write(response)
+        connection.flush()
+
+
+    def msg(self, data):
+        '''
+        Add message from user
+        '''
+
+        # Generate HTML
+        html  = '<div class="message">'
+        html += '<span class="author">Unknown</span>'
+        html += '<span class="message">%s</span>' % data
+        html += '</div>'
+
+        return html
