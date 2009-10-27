@@ -46,6 +46,10 @@ class EchoHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         if self.path == '/':
             self.path = '/static/index.html'
 
+        # Ignore favicon requests
+        if self.path == '/favicon.ico':
+            return
+
         # File operations begin with /static/
         if self.path.startswith('/static/'):
 
