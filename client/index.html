@@ -24,11 +24,28 @@
 
         <script type="text/javascript">
 
+            // User hash
+            var user_hash = '0';
+
+            // Last message
+            var last_message = 0;
+
             // Call this function on page load
             $(function()
             {
                 $(window).load(function ()
                 {
+                    // TODO: Dirty testing function
+                    var newnick = 'Aaron';
+
+                    var data = {
+                        user_hash: user_hash,
+                        new_nick: 'Aaron',
+                        last_message: last_message,
+                    }
+
+                    $.get('/nick', data, chat_update, 'json');
+
                     // When new-message-send button clicked
                     $('#new-message-send').click(function (event)
                     {
@@ -41,8 +58,15 @@
                         // Reset text box
                         $('#new-message-text').val('');
 
+                        // Generate data
+                        var data = {
+                            user_hash: user_hash,
+                            message: message,
+                            last_message: last_message
+                        }
+
                         // Post message to server
-                        $.get('/msg?'+message, '', chat_update);
+                        $.get('/post', data, chat_update, 'json');
                     });
                 });
             });
@@ -50,7 +74,19 @@
             // Handle reponses from server
             function chat_update(data)
             {
-                $('#chat').append(data);
+                // If response is a post
+                if (data.action == 'post')
+                {
+                    // Get html
+                    var html = data.html;
+                    $('#chat').append(html);
+                }
+                // If response updates this users nick
+                else if (data.action == 'nick')
+                {
+                    user_hash = data.user_hash;
+                    alert('nick = '+data.new_nick);
+                }
             }
 
         </script>

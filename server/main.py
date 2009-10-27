@@ -56,8 +56,7 @@ class EchoHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
 
             # Handle request and send response to the client
-            handler = messaging.handler()
-            handler.handleRequest(self.wfile, self.path[1:])
+            msghandler.handleRequest(self, self.path[1:])
 
 
         # Create log message
@@ -69,6 +68,9 @@ class EchoHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 # If file called directly, run server
 if __name__ == '__main__':
+
+    # Create messaging handler
+    msghandler = messaging.handler()
 
     # Create forking server
     server = BaseHTTPServer.HTTPServer(('localhost', 8000), EchoHandler)
