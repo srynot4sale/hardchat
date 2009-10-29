@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # Import python libs
-import hashlib, json, urlparse
+import hashlib, json, os, time, urlparse
 
 # List of users active in the chat
 users = {}
@@ -78,9 +78,12 @@ class handler:
         # See if we are adding a new user
         while hash not in users:
             # Repeat until we create a unique hash
-            # Create unique hash
+            # Create unique string - client ip, nick, current time, process id
+            unique = str(request.client_address[0]) + nick + str(time.time()) + str(os.getpid)
+
+            # Create hash from unique string
             m = hashlib.md5()
-            m.update(str(request.client_address[0]) + nick)
+            m.update(unique)
             hash = m.hexdigest()
 
             # If already used, try again
@@ -99,11 +102,17 @@ class handler:
         '''
         Post message from user
         '''
+        return self._getMessages(request)
 
+
+
+    def _getMessages(self, request):
+        '''
+        Send new messages back to client
+        '''
         # Generate HTML
         html  = '<div class="message">'
         html += '<span class="author">%s</span>' % users[data['user_hash'][0]]['nick']
         html += '<span class="message">%s</span>' % data['message'][0]
         html += '</div>'
-
         return {'html': html}
