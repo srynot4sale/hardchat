@@ -22,9 +22,6 @@ users = {}
 # List of message id's in order
 messages = []
 
-# Message data
-message_data = {}
-
 
 class handler:
     '''
@@ -131,7 +128,7 @@ class handler:
             'time': str(time.time())
         }
 
-        messages.append(message)
+        self._saveMessage(message)
 
         return self._getMessages(request, data)
 
@@ -143,17 +140,27 @@ class handler:
         return self._getMessages(request, data)
 
 
-    def _serverMessage(self, message):
+    def _serverMessage(self, text):
         '''
         Post a server generated message
         '''
         message = {
             'server': True,
-            'message': message,
+            'message': text,
             'time': str(time.time())
         }
 
+        self._saveMessage(message)
+
+
+    def _saveMessage(self, message):
+        '''
+        Save a message to the queue, and limit the queues size
+        '''
+        global messages
         messages.append(message)
+
+        messages = messages[-100:]
 
 
     def _getMessages(self, request, data):
