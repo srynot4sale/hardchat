@@ -77,7 +77,7 @@ if __name__ == '__main__':
     msghandler = messaging.handler()
 
     # Create forking server
-    server = BaseHTTPServer.HTTPServer(('localhost', 8000), EchoHandler)
+    server = BaseHTTPServer.HTTPServer(('', 8000), EchoHandler)
     print "Server listening on localhost:8000..."
     try:
         server.serve_forever()
