@@ -166,21 +166,28 @@ class handler:
 
         # Loop through unread messages
         html = ''
+        message_id = last_message
         for message in unread:
-            # Generate HTML
-            if 'server' in message:
-                html += '<div class="message server">'
-            else:
-                html += '<div class="message">'
 
+            # Generate HTML
+            html += '<div id="message_%s" ' % last_message
+
+            if 'server' in message:
+                html += 'class="message server">'
+            else:
+                html += 'class="message">'
+
+            # If not a server message, display author
             if 'server' not in message:
                 html += '<span class="author">%s</span>' % users[message['user']]['nick']
 
             html += '<span class="message">%s</span>' % message['message']
             html += '</div>'
 
+            message_id += 1
+
         if unread:
             # Get new last message
-            last_message = messages.index(message) + 1
+            last_message = message_id
 
         return {'html': html, 'last_message': last_message}
