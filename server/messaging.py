@@ -74,9 +74,12 @@ class handler:
         # Get supplied data
         nick = data['new_nick'][0]
         hash = data['user_hash'][0]
+        new_user = False
 
         # See if we are adding a new user
         while hash not in users:
+            new_user = True
+
             # Repeat until we create a unique hash
             # Create unique string - client ip, nick, current time
             unique = str(request.client_address[0]) + nick + str(time.time())
@@ -93,8 +96,18 @@ class handler:
             # Save new hash
             users[hash] = {}
 
+        # Get old nick
+        if not new_user:
+            old_nick = users[hash]['nick']
+
         # Update/save nick
         users[hash]['nick'] = nick
+
+        # Post message
+        if new_user:
+            self._serverMessage('<i>%s</i> joined the chat' % nick)
+        else:
+            self._serverMessage('<i>%s</i> changed nick to <i>%s</i>' % (old_nick, nick))
 
         # Get any new messages
         ret = self._getMessages(request, data)
@@ -107,6 +120,7 @@ class handler:
         '''
         Post message from user
         '''
+        # Add new users message
         message = {
             'user': data['user_hash'][0],
             'message': data['message'][0],
@@ -117,6 +131,18 @@ class handler:
 
         return self._getMessages(request, data)
 
+
+    def _serverMessage(self, message):
+        '''
+        Post a server generated message
+        '''
+        message = {
+            'server': True,
+            'message': message,
+            'time': str(time.time())
+        }
+
+        messages.append(message)
 
 
     def _getMessages(self, request, data):
@@ -131,8 +157,14 @@ class handler:
         html = ''
         for message in unread:
             # Generate HTML
-            html += '<div class="message">'
-            html += '<span class="author">%s</span>' % users[message['user']]['nick']
+            if 'server' in message:
+                html += '<div class="message server">'
+            else:
+                html += '<div class="message">'
+
+            if 'server' not in message:
+                html += '<span class="author">%s</span>' % users[message['user']]['nick']
+
             html += '<span class="message">%s</span>' % message['message']
             html += '</div>'
 

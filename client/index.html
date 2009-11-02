@@ -35,16 +35,28 @@
             {
                 $(window).load(function ()
                 {
-                    // TODO: Dirty testing function
-                    var newnick = 'Aaron';
+                    // When set-nick-update button clicked
+                    $('#set-nick-update').click(function (event)
+                    {
+                        // Don't post form
+                        event.preventDefault();
 
-                    var data = {
-                        user_hash: user_hash,
-                        new_nick: 'Aaron',
-                        last_message: last_message,
-                    }
+                        // Grab new nick text box contents
+                        var newnick = $('#set-nick-new').val();
 
-                    $.get('/nick', data, chat_update, 'json');
+                        // Reset text box
+                        $('#set-nick-new').val('');
+
+                        // Generate data
+                        var data = {
+                            user_hash: user_hash,
+                            new_nick: newnick,
+                            last_message: last_message
+                        }
+
+                        // Post message to server
+                        $.get('/nick', data, chat_update, 'json');
+                    });
 
                     // When new-message-send button clicked
                     $('#new-message-send').click(function (event)
@@ -106,6 +118,11 @@
                 font-size: 80%;
             }
 
+            #chat div.server
+            {
+                background-color: #dedede;
+            }
+
             #chat div.message span.author
             {
                 font-weight: bold;
@@ -130,6 +147,18 @@
                 <span class="author">Chat</span>
                 <span class="message">Welcome!</span>
             </div>
+        </div>
+
+        <div id="set-nick">
+            <form>
+                <p>
+                    Nick:
+                    <input type="text" id="set-nick-new" />
+                </p>
+                <p>
+                    <input type="submit" id="set-nick-update" value="Update" />
+                </p>
+            </form>
         </div>
 
         <div id="new-message">
