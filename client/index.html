@@ -30,6 +30,20 @@
             // Last message
             var last_message = 0;
 
+            // Window has focus
+            var has_focus = true;
+
+            // Update has_focus when window shown/hidden
+            $(window).bind("blur", function() {
+                has_focus = false;
+            });
+
+            $(window).bind("focus", function() {
+                has_focus = true;
+                document.title = 'JapHard Chat';
+            });
+
+
             // Call this function on page load
             $(function()
             {
@@ -61,6 +75,9 @@
                     // When new-message-send button clicked
                     $('#new-message-send').click(function (event)
                     {
+                        // Get rid of unread title
+                        document.title = 'JapHard Chat';
+
                         // Don't post form
                         event.preventDefault();
 
@@ -80,6 +97,9 @@
                         // Post message to server
                         $.get('/post', data, chat_update, 'json');
                     });
+
+                    // Grab unread messages
+                    poll_chat();
 
                     // Poll the server for updates every 3 seconds
                     var poll_interval = setInterval(poll_chat, 3000)
@@ -115,7 +135,17 @@
 
                 // Get html
                 var html = data.html;
-                $('#chat').append(html);
+
+                if (html)
+                {
+                    $('#chat').append(html);
+
+                    // If window hidden, update title
+                    if (has_focus == false)
+                    {
+                        document.title = '* JapHard Chat';
+                    }
+                }
             }
 
         </script>
