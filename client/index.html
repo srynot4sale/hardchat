@@ -126,6 +126,12 @@
                 if (data.action == 'nick')
                 {
                     user_hash = data.user_hash;
+
+                    // Update nick display
+                    $('#set-nick-current').html('Current nick: '+data.new_nick);
+
+                    // Show post message box if hidden
+                    $('#new-message').show();
                 }
 
                 // All responses should return any new messages
@@ -180,11 +186,23 @@
                 padding-right: 0.5em;
             }
 
-            #new-message
+            #new-message, #set-nick
             {
                 margin: 2em 0;
                 border: 1px solid #ccc;
                 padding: 1em;
+            }
+
+            #new-message p, #set-nick p
+            {
+                margin: 0.1em;
+            }
+
+            #new-message #new-message-text
+            {
+                font-size: 80%;
+                padding: 0.25em;
+                width: 30em;
             }
 
         </style>
@@ -199,23 +217,28 @@
             </div>
         </div>
 
-        <div id="set-nick">
+        <div id="new-message" style="display: none;">
             <form>
                 <p>
-                    Nick:
-                    <input type="text" id="set-nick-new" />
+                    <textarea id="new-message-text"></textarea>
                 </p>
                 <p>
-                    <input type="submit" id="set-nick-update" value="Update" />
+                    <input type="submit" id="new-message-send" value="Post" />
                 </p>
             </form>
         </div>
 
-        <div id="new-message">
+        <div id="set-nick">
             <form>
-                <textarea id="new-message-text"></textarea>
-                <input type="submit" id="new-message-send" value="Post" />
+                <p id="set-nick-current">
+                    Please set a nick
+                </p>
+                <p>
+                    <input type="text" id="set-nick-new" />
+                    <input type="submit" id="set-nick-update" value="Update Nick" />
+                </p>
             </form>
         </div>
+
     </body>
 </html>
