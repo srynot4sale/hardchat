@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # Import python libs
-import hashlib, json, os, time, urlparse
+import hashlib, json, time, urlparse
 
 # List of users active in the chat
 users = {}
@@ -78,8 +78,8 @@ class handler:
         # See if we are adding a new user
         while hash not in users:
             # Repeat until we create a unique hash
-            # Create unique string - client ip, nick, current time, process id
-            unique = str(request.client_address[0]) + nick + str(time.time()) + str(os.getpid)
+            # Create unique string - client ip, nick, current time
+            unique = str(request.client_address[0]) + nick + str(time.time())
 
             # Create hash from unique string
             m = hashlib.md5()
@@ -95,24 +95,49 @@ class handler:
 
         # Update/save nick
         users[hash]['nick'] = nick
-        return {'user_hash': hash, 'new_nick': nick, 'html': hash}
+
+        # Get any new messages
+        ret = self._getMessages(request, data)
+        ret['user_hash'] = hash
+        ret['new_nick'] = nick
+        return ret
 
 
     def post(self, request, data):
         '''
         Post message from user
         '''
-        return self._getMessages(request)
+        message = {
+            'user': data['user_hash'][0],
+            'message': data['message'][0],
+            'time': str(time.time())
+        }
+
+        messages.append(message)
+
+        return self._getMessages(request, data)
 
 
 
-    def _getMessages(self, request):
+    def _getMessages(self, request, data):
         '''
         Send new messages back to client
         '''
-        # Generate HTML
-        html  = '<div class="message">'
-        html += '<span class="author">%s</span>' % users[data['user_hash'][0]]['nick']
-        html += '<span class="message">%s</span>' % data['message'][0]
-        html += '</div>'
-        return {'html': html}
+        # Grab all messages since the last one the user has seen
+        last_message = int(data['last_message'][0])
+        unread = messages[last_message:]
+
+        # Loop through unread messages
+        html = ''
+        for message in unread:
+            # Generate HTML
+            html += '<div class="message">'
+            html += '<span class="author">%s</span>' % users[message['user']]['nick']
+            html += '<span class="message">%s</span>' % message['message']
+            html += '</div>'
+
+        if unread:
+            # Get new last message
+            last_message = messages.index(message) + 1
+
+        return {'html': html, 'last_message': last_message}

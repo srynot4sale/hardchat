@@ -74,22 +74,52 @@
             // Handle reponses from server
             function chat_update(data)
             {
-                // If response is a post
-                if (data.action == 'post')
-                {
-                    // Get html
-                    var html = data.html;
-                    $('#chat').append(html);
-                }
                 // If response updates this users nick
-                else if (data.action == 'nick')
+                if (data.action == 'nick')
                 {
                     user_hash = data.user_hash;
-                    alert('nick = '+data.new_nick);
                 }
+
+                // All responses should return any new messages
+
+                // Get last message
+                last_message = data.last_message;
+
+                // Get html
+                var html = data.html;
+                $('#chat').append(html);
             }
 
         </script>
+
+        <style>
+
+            body *
+            {
+                font-family: Arial, Verdana, sans-serif;
+            }
+
+            #chat div.message
+            {
+                margin: 0.25em;
+                border-bottom: 1px solid #aaa;
+                font-size: 80%;
+            }
+
+            #chat div.message span.author
+            {
+                font-weight: bold;
+                padding-right: 0.5em;
+            }
+
+            #new-message
+            {
+                margin: 2em 0;
+                border: 1px solid #ccc;
+                padding: 1em;
+            }
+
+        </style>
     </head>
 
     <body>
@@ -101,8 +131,6 @@
                 <span class="message">Welcome!</span>
             </div>
         </div>
-
-        <hr />
 
         <div id="new-message">
             <form>
