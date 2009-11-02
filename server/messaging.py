@@ -117,6 +117,13 @@ class handler:
         return ret
 
 
+    def poll(self, request, data):
+        '''
+        Get any new messages from server
+        '''
+        return self._getMessages(request, data)
+
+
     def post(self, request, data):
         '''
         Post message from user
@@ -130,13 +137,6 @@ class handler:
 
         self._saveMessage(message)
 
-        return self._getMessages(request, data)
-
-
-    def poll(self, request, data):
-        '''
-        Get any new messages from server
-        '''
         return self._getMessages(request, data)
 
 
