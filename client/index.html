@@ -80,8 +80,24 @@
                         // Post message to server
                         $.get('/post', data, chat_update, 'json');
                     });
+
+                    // Poll the server for updates every 3 seconds
+                    var poll_interval = setInterval(poll_chat, 3000)
                 });
             });
+
+            // Poll the server for updates
+            function poll_chat()
+            {
+                // Generate data
+                var data = {
+                    user_hash: user_hash,
+                    last_message: last_message
+                }
+
+                // Post message to server
+                $.get('/poll', data, chat_update, 'json');
+            }
 
             // Handle reponses from server
             function chat_update(data)

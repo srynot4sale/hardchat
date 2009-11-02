@@ -32,7 +32,11 @@ class handler:
     '''
 
     # Publically available methods
-    public = ['post', 'nick']
+    public = [
+        'nick',
+        'poll',
+        'post',
+    ]
 
 
     def handleRequest(self, request, path_data):
@@ -129,6 +133,13 @@ class handler:
 
         messages.append(message)
 
+        return self._getMessages(request, data)
+
+
+    def poll(self, request, data):
+        '''
+        Get any new messages from server
+        '''
         return self._getMessages(request, data)
 
 
