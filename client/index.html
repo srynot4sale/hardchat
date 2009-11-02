@@ -127,6 +127,11 @@
                 font-family: Arial, Verdana, sans-serif;
             }
 
+            a
+            {
+                color: #f30;
+            }
+
             #chat div.message
             {
                 margin: 0.25em;
@@ -159,9 +164,8 @@
         <h1>JapHard Chat</h1>
 
         <div id="chat">
-            <div class="message">
-                <span class="author">Chat</span>
-                <span class="message">Welcome!</span>
+            <div class="message server">
+                <span class="message">Welcome to JapHard chat. Please update your nickname before posting a message</span>
             </div>
         </div>
 
@@ -180,7 +184,7 @@
         <div id="new-message">
             <form>
                 <textarea id="new-message-text"></textarea>
-                <input type="submit" id="new-message-send" value="Send" />
+                <input type="submit" id="new-message-send" value="Post" />
             </form>
         </div>
     </body>
