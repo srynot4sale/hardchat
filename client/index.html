@@ -176,6 +176,9 @@
                     if (has_focus == false)
                     {
                         document.title = '* JapHard Chat';
+
+                        // Scroll to bottom of page
+                        $('body').attr({ scrollTop: $('body').attr('scrollHeight') });
                     }
                 }
             }
