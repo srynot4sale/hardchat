@@ -123,7 +123,10 @@ class handler:
         '''
         # Check the user is logged in
         if data['user_hash'][0] not in users:
-            return {'html': ''}
+            return {
+                'html': '',
+                'last_message': data['last_message'][0]
+            }
 
         return self._getMessages(request, data)
 
@@ -134,7 +137,10 @@ class handler:
         '''
         # Check the user is logged in
         if data['user_hash'][0] not in users:
-            return {'html': '<div class="message server"><span class="message">An error has occured, please refresh page</span></div>'}
+            return {
+                'html': '<div class="message server"><span class="message">An error has occured, please refresh page</span></div>',
+                'last_message': data['last_message'][0]
+            }
 
         # Add new message
         message = {
