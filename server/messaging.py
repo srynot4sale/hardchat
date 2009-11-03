@@ -121,6 +121,10 @@ class handler:
         '''
         Get any new messages from server
         '''
+        # Check the user is logged in
+        if data['user_hash'][0] not in users:
+            return {'html': ''}
+
         return self._getMessages(request, data)
 
 
@@ -128,7 +132,11 @@ class handler:
         '''
         Post message from user
         '''
-        # Add new users message
+        # Check the user is logged in
+        if data['user_hash'][0] not in users:
+            return {'html': '<div class="message server"><span class="message">An error has occured, please refresh page</span></div>'}
+
+        # Add new message
         message = {
             'user': data['user_hash'][0],
             'message': data['message'][0],
