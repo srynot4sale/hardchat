@@ -197,6 +197,16 @@
                 color: #f30;
             }
 
+            form
+            {
+                margin: 0;
+            }
+
+            #chat
+            {
+                clear: both;
+            }
+
             #chat div.message
             {
                 margin: 0.25em;
@@ -215,11 +225,26 @@
                 padding-right: 0.5em;
             }
 
-            #new-message, #set-nick
+            #new-message
             {
                 margin: 2em 0;
                 border: 1px solid #ccc;
                 padding: 1em;
+                width: 45%;
+            }
+
+            h1
+            {
+                float: left;
+            }
+
+            #set-nick
+            {
+                padding: 0.5em;
+                float: right;
+                border: 1px solid #ccc;
+                width: 30%;
+                margin-bottom: 1em;
             }
 
             #new-message p, #set-nick p
@@ -240,6 +265,18 @@
     <body>
         <h1>JapHard Chat</h1>
 
+        <div id="set-nick">
+            <form>
+                <p id="set-nick-current">
+                    Please set a nick
+                </p>
+                <p>
+                    <input type="text" id="set-nick-new" />
+                    <input type="submit" id="set-nick-update" value="Update Nick" />
+                </p>
+            </form>
+        </div>
+
         <div id="chat">
             <div class="message server">
                 <span class="message">Welcome to JapHard chat. Please update your nickname before posting a message</span>
@@ -256,18 +293,5 @@
                 </p>
             </form>
         </div>
-
-        <div id="set-nick">
-            <form>
-                <p id="set-nick-current">
-                    Please set a nick
-                </p>
-                <p>
-                    <input type="text" id="set-nick-new" />
-                    <input type="submit" id="set-nick-update" value="Update Nick" />
-                </p>
-            </form>
-        </div>
-
     </body>
 </html>
