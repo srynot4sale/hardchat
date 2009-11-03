@@ -88,6 +88,10 @@
                         if (event.keyCode == 13)
                         {
                             post_message();
+
+                            // Don't insert newline
+                            event.preventDefault();
+
                         }
                     });
 
