@@ -75,27 +75,20 @@
                     // When new-message-send button clicked
                     $('#new-message-send').click(function (event)
                     {
-                        // Get rid of unread title
-                        document.title = 'JapHard Chat';
-
                         // Don't post form
                         event.preventDefault();
 
-                        // Grab message text box contents
-                        var message = $('#new-message-text').val();
+                        post_message();
+                    });
 
-                        // Reset text box
-                        $('#new-message-text').val('');
-
-                        // Generate data
-                        var data = {
-                            user_hash: user_hash,
-                            message: message,
-                            last_message: last_message
+                    // Capture "enter" keypresses in post message box
+                    $('#new-message-text').bind('keypress', function(event)
+                    {
+                        // 13 = enter
+                        if (event.keyCode == 13)
+                        {
+                            post_message();
                         }
-
-                        // Post message to server
-                        $.get('/post', data, chat_update, 'json');
                     });
 
                     // Grab unread messages
@@ -105,6 +98,35 @@
                     var poll_interval = setInterval(poll_chat, 3000)
                 });
             });
+
+            // Post message
+            function post_message()
+            {
+                // Get rid of unread title
+                document.title = 'JapHard Chat';
+
+                // Grab message text box contents
+                var message = $('#new-message-text').val();
+
+                // Reset text box
+                $('#new-message-text').val('');
+
+                // If message empty, do nothing
+                if (message == '')
+                {
+                    return;
+                }
+
+                // Generate data
+                var data = {
+                    user_hash: user_hash,
+                    message: message,
+                    last_message: last_message
+                }
+
+                // Post message to server
+                $.get('/post', data, chat_update, 'json');
+            }
 
             // Poll the server for updates
             function poll_chat()
