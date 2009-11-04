@@ -34,11 +34,11 @@
             var has_focus = true;
 
             // Update has_focus when window shown/hidden
-            $(window).bind("blur", function() {
+            $(document).bind("blur", function() {
                 has_focus = false;
             });
 
-            $(window).bind("focus", function() {
+            $(document).bind("focus", function() {
                 has_focus = true;
                 document.title = 'JapHard Chat';
             });
