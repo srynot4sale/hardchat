@@ -174,7 +174,9 @@ class handler:
         global messages
         messages.append(message)
 
-        messages = messages[-100:]
+        # Limit message archive length to 100
+        while len(messages) > 100:
+            message.pop(0)
 
 
     def _getMessages(self, request, data):
