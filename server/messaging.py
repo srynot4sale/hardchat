@@ -68,6 +68,28 @@ class handler:
         json.dump(response, request.wfile)
 
 
+    def _authenticate(self, request, data):
+        '''
+        Authenticate users
+        '''
+        # Delete expired users
+        expire = time.time() - 30
+        for user in users.keys():
+            if users[user]['keepalive'] < expire:
+                self._serverMessage('%s has left the chat' % users[user]['nick'])
+                del users[user]
+
+        # Authenticate current user
+        if data['user_hash'][0] in users:
+            # Update keepalive time
+            users[data['user_hash'][0]]['keepalive'] = time.time()
+
+            return True
+        else:
+            return False
+
+
+
     def nick(self, request, data):
         '''
         Change user's nick
@@ -103,6 +125,7 @@ class handler:
 
         # Update/save nick
         users[hash]['nick'] = nick
+        users[hash]['keepalive'] = time.time()
 
         # Post message
         if new_user:
@@ -122,7 +145,7 @@ class handler:
         Get any new messages from server
         '''
         # Check the user is logged in
-        if data['user_hash'][0] not in users:
+        if not self._authenticate(request, data):
             return {
                 'html': '',
                 'last_message': data['last_message'][0]
@@ -136,7 +159,7 @@ class handler:
         Post message from user
         '''
         # Check the user is logged in
-        if data['user_hash'][0] not in users:
+        if not self._authenticate(request, data):
             return {
                 'html': '<div class="message server"><span class="message">An error has occured, please refresh page</span></div>',
                 'last_message': data['last_message'][0]
@@ -145,8 +168,8 @@ class handler:
         # Add new message
         message = {
             'user': data['user_hash'][0],
+            'nick': users[data['user_hash'][0]]['nick'],
             'message': data['message'][0],
-            'time': str(time.time())
         }
 
         self._saveMessage(message)
@@ -161,7 +184,6 @@ class handler:
         message = {
             'server': True,
             'message': text,
-            'time': str(time.time())
         }
 
         self._saveMessage(message)
@@ -171,7 +193,8 @@ class handler:
         '''
         Save a message to the queue, and limit the queues size
         '''
-        global messages
+        message['time'] = time.localtime()
+
         messages.append(message)
 
         # Limit message archive length to 100
@@ -193,7 +216,7 @@ class handler:
         for message in unread:
 
             # Generate HTML
-            html += '<div id="message_%s" ' % last_message
+            html += '<div id="message_%s" title="Message %s (%s)" ' % (last_message, last_message, time.strftime('%a, %d %b %Y %H:%M:%S', message['time']))
 
             if 'server' in message:
                 html += 'class="message server">'
@@ -202,7 +225,7 @@ class handler:
 
             # If not a server message, display author
             if 'server' not in message:
-                html += '<span class="author">%s</span>' % users[message['user']]['nick']
+                html += '<span class="author">%s</span>' % message['nick']
 
             html += '<span class="message">%s</span>' % message['message']
             html += '</div>'
