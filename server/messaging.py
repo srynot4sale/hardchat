@@ -99,7 +99,15 @@ class handler:
         hash = data['user_hash'][0]
         new_user = False
 
-        # See if we are adding a new user
+        # Check if nick already used
+        for user in users.keys():
+            if users[user]['nick'] == nick:
+                return {
+                    'html': '<div class="message server"><span class="message">Nick already in use. Choose another or if you have logged out and are returning - wait a few seconds and try again</span></div>',
+                    'last_message': data['last_message'][0]
+                }
+
+        # Create new user
         while hash not in users:
             new_user = True
 
@@ -114,6 +122,7 @@ class handler:
 
             # If already used, try again
             if hash in users:
+                hash = None
                 continue
 
             # Save new hash
