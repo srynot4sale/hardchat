@@ -135,6 +135,12 @@
             // Poll the server for updates
             function poll_chat()
             {
+                // Only poll if logged in
+                if (user_hash == '0')
+                {
+                    return;
+                }
+
                 // Generate data
                 var data = {
                     user_hash: user_hash,
