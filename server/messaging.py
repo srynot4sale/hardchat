@@ -73,10 +73,10 @@ class handler:
         Authenticate users
         '''
         # Delete expired users
-        expire = time.time() - 30
+        expire = time.time() - 15
         for user in users.keys():
             if users[user]['keepalive'] < expire:
-                self._serverMessage('%s has left the chat' % users[user]['nick'])
+                self._serverMessage('<i>%s</i> left the chat' % users[user]['nick'])
                 del users[user]
 
         # Authenticate current user
