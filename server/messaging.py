@@ -223,7 +223,7 @@ class handler:
         for message in unread:
 
             # Generate HTML
-            html += '<div id="message_%s" title="Message %s (%s)" ' % (last_message, last_message, time.strftime('%a, %d %b %Y %H:%M:%S', message['time']))
+            html += '<div id="message_%s" title="Message %s (%s)" ' % (message_id, message_id, time.strftime('%a, %d %b %Y %H:%M:%S', message['time']))
 
             if 'server' in message:
                 html += 'class="message server">'
