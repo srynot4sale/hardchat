@@ -156,8 +156,7 @@ class handler:
         # Check the user is logged in
         if not self._authenticate(request, data):
             return {
-                'html': '',
-                'last_message': data['last_message'][0]
+                'user_hash': '0',
             }
 
         return self._getMessages(request, data)
@@ -171,7 +170,7 @@ class handler:
         if not self._authenticate(request, data):
             return {
                 'html': '<div class="message server"><span class="message">An error has occured, please refresh page</span></div>',
-                'last_message': data['last_message'][0]
+                'user_hash': '0',
             }
 
         # Add new message
