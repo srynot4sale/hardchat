@@ -155,15 +155,19 @@
             function chat_update(data)
             {
                 // If response updates this users nick
-                if (data.action == 'nick')
+                if (data.action == 'nick' && data.user_hash)
                 {
-                    user_hash = data.user_hash;
-
                     // Update nick display
                     $('#set-nick-current').html('Current nick: '+data.new_nick);
 
                     // Show post message box if hidden
                     $('#new-message').show();
+                }
+
+                // If hash updated (e.g. logging in or out)
+                if (data.user_hash)
+                {
+                    user_hash = data.user_hash;
                 }
 
                 // All responses should return any new messages
