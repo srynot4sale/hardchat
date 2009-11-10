@@ -104,7 +104,6 @@ class handler:
             if users[user]['nick'] == nick:
                 return {
                     'html': '<div class="message server"><span class="message">Nick already in use. Choose another or if you have logged out and are returning - wait a few seconds and try again</span></div>',
-                    'last_message': data['last_message'][0]
                 }
 
         # Create new user

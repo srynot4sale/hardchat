@@ -172,15 +172,40 @@
 
                 // All responses should return any new messages
 
-                // Get last message
-                last_message = data.last_message;
+                // Get last message if set
+                if (data.last_message)
+                {
+                    last_message = data.last_message;
+                }
 
                 // Get html
-                var html = data.html;
-
-                if (html)
+                if (data.html)
                 {
-                    $('#chat').append(html);
+                    // Add messages to staging area
+                    var staging = $('#message-staging').html(data.html);
+
+                    // Loop though messages
+                    var messages = $('div.message', staging);
+
+                    for (var i = 0; i < messages.length; i++)
+                    {
+                        var message = messages[i];
+
+                        // If it has an ID, check for a duplicate
+                        var id = $(message).attr('id');
+                        if (id)
+                        {
+                            var duplicate = $('#'+id, $('#chat'));
+
+                            if (duplicate.length)
+                            {
+                                continue;
+                            }
+                        }
+
+                        // If no duplicate, add to messages
+                        $('#chat').append(message);
+                    }
 
                     // If window hidden, update title
                     if (has_focus == false)
@@ -309,6 +334,8 @@
                 </p>
             </form>
         </div>
+
+        <div id="message-staging" style="display: none;"></div>
 
         <p id="footer">
             Check out the code! <a href="http://github.com/srynot4sale/hardchat/">http://github.com/srynot4sale/hardchat</a>.
