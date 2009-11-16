@@ -40,7 +40,7 @@
 
             $(document).bind("focus", function() {
                 has_focus = true;
-                document.title = 'JapHard Chat';
+                document.title = 'HardChat';
             });
 
 
@@ -107,7 +107,7 @@
             function post_message()
             {
                 // Get rid of unread title
-                document.title = 'JapHard Chat';
+                document.title = 'HardChat';
 
                 // Grab message text box contents
                 var message = $('#new-message-text').val();
@@ -210,7 +210,7 @@
                     // If window hidden, update title
                     if (has_focus == false)
                     {
-                        document.title = '* JapHard Chat';
+                        document.title = '* HardChat';
 
                         // Scroll to bottom of page
                         $('body').attr({ scrollTop: $('body').attr('scrollHeight') });
