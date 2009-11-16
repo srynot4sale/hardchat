@@ -60,14 +60,6 @@ class handler:
         self._respond(request, response)
 
 
-    def _respond(self, request, response):
-        '''
-        Send response back to client
-        '''
-        # Encode response as json and send
-        json.dump(response, request.wfile)
-
-
     def _authenticate(self, request, data):
         '''
         Authenticate users
@@ -89,6 +81,78 @@ class handler:
             return False
 
 
+    def _getMessages(self, request, data):
+        '''
+        Send new messages back to client
+        '''
+        # Grab all messages since the last one the user has seen
+        last_message = int(data['last_message'][0])
+        unread = messages[last_message:]
+
+        # Loop through unread messages
+        html = ''
+        message_id = last_message
+        for message in unread:
+
+            # Generate HTML
+            html += '<div id="message_%s" title="Message %s (%s)" ' % (message_id, message_id, time.strftime('%a, %d %b %Y %H:%M:%S', message['time']))
+
+            if 'server' in message:
+                html += 'class="message server">'
+            else:
+                html += 'class="message">'
+
+            # If not a server message, display author
+            if 'server' not in message:
+                html += '<span class="author">%s</span>' % message['nick']
+
+            html += '<span class="message">%s</span>' % message['message']
+            html += '</div>'
+
+            message_id += 1
+
+        if unread:
+            # Get new last message
+            last_message = message_id
+
+        return {'html': html, 'last_message': last_message}
+
+
+    def _respond(self, request, response):
+        '''
+        Send response back to client
+        '''
+        # Encode response as json and send
+        json.dump(response, request.wfile)
+
+
+    def _saveMessage(self, message):
+        '''
+        Save a message to the queue, and limit the queues size
+        '''
+        message['time'] = time.localtime()
+
+        messages.append(message)
+
+        # Limit message archive length to 100
+        while len(messages) > 100:
+            messages.pop(0)
+
+
+    def _serverMessage(self, text):
+        '''
+        Post a server generated message
+        '''
+        message = {
+            'server': True,
+            'message': text,
+        }
+
+        self._saveMessage(message)
+
+
+    ##############################
+    # Public methods
 
     def nick(self, request, data):
         '''
@@ -182,65 +246,3 @@ class handler:
         self._saveMessage(message)
 
         return self._getMessages(request, data)
-
-
-    def _serverMessage(self, text):
-        '''
-        Post a server generated message
-        '''
-        message = {
-            'server': True,
-            'message': text,
-        }
-
-        self._saveMessage(message)
-
-
-    def _saveMessage(self, message):
-        '''
-        Save a message to the queue, and limit the queues size
-        '''
-        message['time'] = time.localtime()
-
-        messages.append(message)
-
-        # Limit message archive length to 100
-        while len(messages) > 100:
-            messages.pop(0)
-
-
-    def _getMessages(self, request, data):
-        '''
-        Send new messages back to client
-        '''
-        # Grab all messages since the last one the user has seen
-        last_message = int(data['last_message'][0])
-        unread = messages[last_message:]
-
-        # Loop through unread messages
-        html = ''
-        message_id = last_message
-        for message in unread:
-
-            # Generate HTML
-            html += '<div id="message_%s" title="Message %s (%s)" ' % (message_id, message_id, time.strftime('%a, %d %b %Y %H:%M:%S', message['time']))
-
-            if 'server' in message:
-                html += 'class="message server">'
-            else:
-                html += 'class="message">'
-
-            # If not a server message, display author
-            if 'server' not in message:
-                html += '<span class="author">%s</span>' % message['nick']
-
-            html += '<span class="message">%s</span>' % message['message']
-            html += '</div>'
-
-            message_id += 1
-
-        if unread:
-            # Get new last message
-            last_message = message_id
-
-        return {'html': html, 'last_message': last_message}
