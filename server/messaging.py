@@ -222,6 +222,7 @@ class handler:
         # Check the user is logged in
         if not self._authenticate(request, data):
             return {
+                'html': '<div class="message server"><span class="message">An error has occured, please refresh page</span></div>',
                 'user_hash': '0',
             }
 
