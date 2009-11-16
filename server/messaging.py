@@ -158,6 +158,9 @@ class handler:
         '''
         Change user's nick
         '''
+        # Make sure we timeout any old nicks before trying to login
+        self._authenticate(request, data)
+
         # Get supplied data
         nick = data['new_nick'][0]
         hash = data['user_hash'][0]
